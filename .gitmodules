@@ -1,0 +1,3 @@
+[submodule "hadoop-common"]
+	path = hadoop-common
+	url = https://github.com/VertiPub/hadoop-common
