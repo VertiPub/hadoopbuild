@@ -28,8 +28,8 @@ tar -C hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf 
 DEST_DIR=${WORKSPACE}/install-${BUILD_NUMBER}/opt
 mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
-tar -xvzpf ../../../hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
-tar -xvzpf ../../../hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
+tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
+tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
 cd ${WORKSPACE}
 
 #this should really go in the hudson job as config
