@@ -24,24 +24,25 @@ mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/
 tar -C hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz fuse_dfs 
 
 # convert each tarball into an RPM
-DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt
-mkdir --mode=0755 -p ${DEST_DIR}
-cd ${DEST_DIR}
-tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
+#stop trying to make the fuse rpm temporarily
+#DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt
+#mkdir --mode=0755 -p ${DEST_DIR}
+#cd ${DEST_DIR}
+#tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
 
-fpm --verbose \
---maintainer ops@verticloud.com \
---vendor VertiCloud \
---provides vcc-fuse \
--s dir \
--t rpm \
--n vcc-fuse  \
--v ${PACKAGE_VERSION} \
---iteration ${DATE_STRING} \
---rpm-user root \
---rpm-group root \
--C ${WORKSPACE}/fuse_install-${BUILD_NUMBER} \
-opt
+#fpm --verbose \
+#--maintainer ops@verticloud.com \
+#--vendor VertiCloud \
+#--provides vcc-fuse \
+#-s dir \
+#-t rpm \
+#-n vcc-fuse  \
+#-v ${PACKAGE_VERSION} \
+#--iteration ${DATE_STRING} \
+#--rpm-user root \
+#--rpm-group root \
+#-C ${WORKSPACE}/fuse_install-${BUILD_NUMBER} \
+#opt
 
 DEST_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/opt
 mkdir --mode=0755 -p ${DEST_DIR}
