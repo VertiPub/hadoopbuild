@@ -1,6 +1,6 @@
 #!/bin/sh
 # clean up any previous artifacts
-rm -rf ${WORKSPACE}/install-${BUILD_NUMBER} ${WORKSPACE}/*.rpm
+rm -rf ${WORKSPACE}/fuse_install-${BUILD_NUMBER} ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} ${WORKSPACE}/*.rpm
 
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
@@ -16,7 +16,6 @@ git checkout -b tobebuilt remotes/origin/branch-2.0.2-alpha-vcc
 
 # build the artifacts using the "pure" maven builds
 
-
 mvn versions:set -DnewVersion=${HADOOP_VERSION}
 mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/lib64 -Drequire.fuse=true -Drequire.snappy clean package
 
@@ -25,15 +24,44 @@ mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/
 tar -C hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz fuse_dfs 
 
 # convert each tarball into an RPM
-DEST_DIR=${WORKSPACE}/install-${BUILD_NUMBER}/opt
+DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt
 mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
+
+fpm --verbose \
+--maintainer ops@verticloud.com \
+--vendor VertiCloud \
+--provides vcc-fuse \
+-s dir \
+-t rpm \
+-n vcc-fuse  \
+-v ${PACKAGE_VERSION} \
+--iteration ${DATE_STRING} \
+--rpm-user root \
+--rpm-group root \
+-C ${WORKSPACE}/fuse_install-${BUILD_NUMBER} \
+opt
+
+DEST_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/opt
+mkdir --mode=0755 -p ${DEST_DIR}
+cd ${DEST_DIR}
+
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
+mv hadoop-${HADOOP_VERSION} hadoop
 cd ${WORKSPACE}
 
-#this should really go in the hudson job as config
-#s3cmd put ./hadoop-dist/target/hadoop-*.tar.gz s3://eng.verticloud.com/
-# this should really go in the hudson job as config
-#&& s3cmd put ./hadoop-dist/target/fuse-2.0.2-${BUILD_NUMBER}-alpha-vcc.tar.gz s3://eng.verticloud.com/
+fpm --verbose \
+--maintainer ops@verticloud.com \
+--vendor VertiCloud \
+--provides vcc-hadoop \
+-s dir \
+-t rpm \
+-n vcc-hadoop  \
+-v ${PACKAGE_VERSION} \
+--iteration ${DATE_STRING} \
+--rpm-user root \
+--rpm-group root \
+-C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
+opt
 
