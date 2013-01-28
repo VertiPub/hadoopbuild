@@ -59,7 +59,7 @@ fpm --verbose \
 -s dir \
 -t rpm \
 -n vcc-hadoop  \
--v ${HADOOP_VERSION} \
+-v ${HADOOP_MAJOR} \
 --iteration ${DATE_STRING} \
 --rpm-user root \
 --rpm-group root \
