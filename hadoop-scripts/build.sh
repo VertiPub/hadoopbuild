@@ -24,7 +24,7 @@ mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/
 tar -C hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz fuse_dfs 
 
 # convert each tarball into an RPM
-#DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt
+DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt
 mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
