@@ -4,7 +4,8 @@ rm -rf ${WORKSPACE}/fuse_install-${BUILD_NUMBER} ${WORKSPACE}/hadoop_install-${B
 
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
-export HADOOP_VERSION=2.0.2-alpha-vcc
+export HADOOP_MAJOR=2.0.2
+export HADOOP_VERSION=${HADOOP_MAJOR}-alpha-vcc
 
 # deal with the submodule
 
@@ -36,7 +37,7 @@ fpm --verbose \
 -s dir \
 -t rpm \
 -n vcc-fuse  \
--v ${HADOOP_VERSION} \
+-v ${HADOOP_MAJOR} \
 --iteration ${DATE_STRING} \
 --rpm-user root \
 --rpm-group root \
