@@ -4,7 +4,7 @@ rm -rf ${WORKSPACE}/fuse_install-${BUILD_NUMBER} ${WORKSPACE}/hadoop_install-${B
 
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
-export HADOOP_MAJOR=2.0.2
+export HADOOP_MAJOR=2.0.2-6
 export HADOOP_VERSION=${HADOOP_MAJOR}-alpha-vcc
 
 # deal with the submodule
