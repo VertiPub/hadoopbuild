@@ -51,6 +51,11 @@ cd ${DEST_DIR}
 
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
 mv hadoop-${HADOOP_VERSION} hadoop
+# https://verticloud.atlassian.net/browse/OPS-731
+# create /etc/hadoop, in a future version of the build we may move the config there directly
+ETC_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/etc/hadoop
+mkdir --mode=0755 -p ${ETC_DIR}
+
 cd ${WORKSPACE}
 
 fpm --verbose \
@@ -65,5 +70,6 @@ fpm --verbose \
 --rpm-user root \
 --rpm-group root \
 -C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
-opt
+opt etc
+
 
