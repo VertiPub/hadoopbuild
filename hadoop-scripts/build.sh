@@ -48,18 +48,24 @@ fpm --verbose \
 -C ${WORKSPACE}/fuse_install-${BUILD_NUMBER} \
 opt
 
-DEST_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/opt
-mkdir --mode=0755 -p ${DEST_DIR}
-cd ${DEST_DIR}
+DEST_ROOT=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}
+OPT_DIR=${DEST_ROOT}/opt
+mkdir --mode=0755 -p ${OPT_DIR}
+cd ${OPT_DIR}
 
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
 # https://verticloud.atlassian.net/browse/OPS-731
 # create /etc/hadoop, in a future version of the build we may move the config there directly
-ETC_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/etc/hadoop-${HADOP_VERSION}
+ETC_DIR=${DEST_ROOT}/etc/hadoop-${HADOP_VERSION}
 mkdir --mode=0755 -p ${ETC_DIR}
 # move the config directory to /etc
-cp -rp $DEST_DIR/hadoop/etc/* $ETC_DIR
-cp $DEST_DIR/hadoop/etc/hadoop $DEST_DIR/hadoop/etc/hadoop-templates
+cp -rp $OPT_DIR/hadoop/etc/* $ETC_DIR
+mv $OPT_DIR/hadoop/etc/hadoop $OPT_DIR/hadoop/etc/hadoop-templates
+cd $DEST_DIR
+find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
+CONFIG_FILES = ""
+for i in `cat /tmp/files`; do CONFIG_FILES="--configfile $i $CONFIG_FILES "; done
+export $CONFIG_FILES;
 
 cd ${WORKSPACE}
 
@@ -73,6 +79,7 @@ fpm --verbose \
 -n ${RPM_NAME}  \
 -v ${RPM_VERSION} \
 --iteration ${DATE_STRING} \
+${CONFIG_FILES \
 --rpm-user root \
 --rpm-group root \
 -C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
