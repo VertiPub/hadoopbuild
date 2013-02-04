@@ -64,7 +64,7 @@ mv $OPT_DIR/hadoop/etc/hadoop $OPT_DIR/hadoop/etc/hadoop-templates
 cd $DEST_DIR
 find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
 CONFIG_FILES = ""
-for i in `cat /tmp/files`; do CONFIG_FILES="--configfile $i $CONFIG_FILES "; done
+for i in `cat /tmp/files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
 export $CONFIG_FILES;
 
 cd ${WORKSPACE}
