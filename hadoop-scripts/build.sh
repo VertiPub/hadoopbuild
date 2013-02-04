@@ -54,8 +54,9 @@ mv hadoop-${HADOOP_VERSION} hadoop
 # https://verticloud.atlassian.net/browse/OPS-731
 # create /etc/hadoop, in a future version of the build we may move the config there directly
 ETC_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/etc/hadoop
+-mkdir --mode=0755 -p ${ETC_DIR}
 # move the config directory to /etc
-mv $DEST_DIR/hadoop/etc $ETC_DIR
+mv $DEST_DIR/hadoop/etc/* $ETC_DIR
 
 cd ${WORKSPACE}
 
