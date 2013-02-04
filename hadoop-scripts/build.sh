@@ -66,6 +66,7 @@ find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
 CONFIG_FILES = ""
 for i in `cat /tmp/files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
 export $CONFIG_FILES;
+rm -f /tmp/$$.files
 
 cd ${WORKSPACE}
 
