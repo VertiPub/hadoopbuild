@@ -1,9 +1,10 @@
 #!/bin/sh
 # clean up any previous artifacts
-rm -rf ${WORKSPACE}/fuse_install-${BUILD_NUMBER} ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} ${WORKSPACE}/*.rpm
+rm -rf ${WORKSPACE}/fuse_install-* ${WORKSPACE}/hadoop_install-* ${WORKSPACE}/*.rpm
 
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
+export RPM_VERSION=0.1.0
 export HADOOP_MAJOR=2.0.2
 export HADOOP_MINOR=6
 export HADOOP_VERSION=${HADOOP_MAJOR}-${HADOOP_MINOR}-alpha-vcc
@@ -26,19 +27,21 @@ mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/
 tar -C hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz fuse_dfs 
 
 # convert each tarball into an RPM
-DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt/fuse
+DEST_DIR=${WORKSPACE}/fuse_install-${BUILD_NUMBER}/opt/fuse-${HADOOP_VERSION}
 mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
+mv ${DEST_DIR}/fuse ${DEST_DIR}/fuse-${HADOOP_VERSION}
 
+export RPM_NAME=`echo vcc-fuse-${HADOOP_MAJOR}`
 fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
---provides vcc-fuse \
+--provides ${RPM_NAME} \
 -s dir \
 -t rpm \
--n vcc-fuse  \
--v ${HADOOP_MAJOR} \
+-n ${RPM_NAME} \
+-v ${RPM_VERSION} \
 --iteration ${DATE_STRING} \
 --rpm-user root \
 --rpm-group root \
@@ -50,24 +53,25 @@ mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
 
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION}.tar.gz
-mv hadoop-${HADOOP_VERSION} hadoop
 # https://verticloud.atlassian.net/browse/OPS-731
 # create /etc/hadoop, in a future version of the build we may move the config there directly
-ETC_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/etc/hadoop
+ETC_DIR=${WORKSPACE}/hadoop_install-${BUILD_NUMBER}/etc/hadoop-${HADOP_VERSION}
 mkdir --mode=0755 -p ${ETC_DIR}
 # move the config directory to /etc
-mv $DEST_DIR/hadoop/etc/* $ETC_DIR
+cp -rp $DEST_DIR/hadoop/etc/* $ETC_DIR
+cp $DEST_DIR/hadoop/etc/hadoop $DEST_DIR/hadoop/etc/hadoop-templates
 
 cd ${WORKSPACE}
 
+export RPM_NAME=`echo vcc-hadoop-${HADOOP_MAJOR}`
 fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
---provides vcc-hadoop \
+--provides ${RPM_NAME} \
 -s dir \
 -t rpm \
--n vcc-hadoop  \
--v ${HADOOP_MAJOR} \
+-n ${RPM_NAME}  \
+-v ${RPM_VERSION} \
 --iteration ${DATE_STRING} \
 --rpm-user root \
 --rpm-group root \
