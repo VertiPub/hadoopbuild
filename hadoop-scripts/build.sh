@@ -5,9 +5,7 @@ rm -rf ${WORKSPACE}/fuse_install-* ${WORKSPACE}/hadoop_install-* ${WORKSPACE}/*.
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
 export RPM_VERSION=0.1.0
-export HADOOP_MAJOR=2.0.2
-export HADOOP_MINOR=6
-export HADOOP_VERSION=${HADOOP_MAJOR}-${HADOOP_MINOR}-alpha-vcc
+export HADOOP_VERSION=2.0.2
 
 # deal with the submodule
 
@@ -32,11 +30,12 @@ mkdir --mode=0755 -p ${DEST_DIR}
 cd ${DEST_DIR}
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${HADOOP_VERSION}.tar.gz
 
-export RPM_NAME=`echo vcc-fuse-${HADOOP_MAJOR}`
+export RPM_NAME=`echo vcc-fuse-${HADOOP_VERSION}`
 fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--replaces vcc-fuse \
 -s dir \
 -t rpm \
 -n ${RPM_NAME} \
@@ -69,11 +68,12 @@ rm -f /tmp/$$.files
 
 cd ${WORKSPACE}
 
-export RPM_NAME=`echo vcc-hadoop-${HADOOP_MAJOR}`
+export RPM_NAME=`echo vcc-hadoop-${HADOOP_VERSION}`
 fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--replaces vcc-hadoop \
 -s dir \
 -t rpm \
 -n ${RPM_NAME}  \
