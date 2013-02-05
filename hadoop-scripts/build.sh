@@ -58,13 +58,13 @@ tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${HADOOP_VERSION
 ETC_DIR=${DEST_ROOT}/etc/hadoop-${HADOOP_VERSION}
 mkdir --mode=0755 -p ${ETC_DIR}
 # move the config directory to /etc
-cp -rp $OPT_DIR/hadoop/etc/* $ETC_DIR
-mv $OPT_DIR/hadoop/etc/hadoop $OPT_DIR/hadoop/etc/hadoop-templates
-cd $DEST_DIR
+cp -rp $OPT_DIR/hadoop-${HADOOP_VERSION}/etc/hadoop/* $ETC_DIR
+mv $OPT_DIR/hadoop-${HADOOP_VERSION}/etc/hadoop $OPT_DIR/hadoop-${HADOOP_VERSION}/etc/hadoop-templates
+cd $DEST_ROOT
 find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
-CONFIG_FILES = ""
-for i in `cat /tmp/files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
-export $CONFIG_FILES;
+export CONFIG_FILES=""
+for i in `cat /tmp/$$.files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
+export CONFIG_FILES
 rm -f /tmp/$$.files
 
 cd ${WORKSPACE}
@@ -84,5 +84,3 @@ ${CONFIG_FILES} \
 --rpm-group root \
 -C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
 opt etc
-
-
