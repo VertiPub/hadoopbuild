@@ -37,6 +37,7 @@ fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--replaces vcc-fuse \
 -s dir \
 -t rpm \
 -n ${RPM_NAME} \
@@ -74,6 +75,7 @@ fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--replaces vcc-hadoop \
 -s dir \
 -t rpm \
 -n ${RPM_NAME}  \
