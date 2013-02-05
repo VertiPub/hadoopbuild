@@ -80,7 +80,7 @@ fpm --verbose \
 -n ${RPM_NAME}  \
 -v ${RPM_VERSION} \
 --iteration ${DATE_STRING} \
-${CONFIG_FILES \
+${CONFIG_FILES} \
 --rpm-user root \
 --rpm-group root \
 -C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
