@@ -5,7 +5,7 @@ rm -rf ${WORKSPACE}/fuse_install-* ${WORKSPACE}/hadoop_install-* ${WORKSPACE}/*.
 # set up env variables
 export DATE_STRING=`date +"%Y%m%d%H%M"`
 export RPM_VERSION=0.1.0
-export HADOOP_VERSION=2.0.2
+export HADOOP_VERSION=2.0.3.RC
 
 # deal with the submodule
 
@@ -13,7 +13,7 @@ cd ${WORKSPACE}
 git submodule init
 git submodule update
 cd ${WORKSPACE}/hadoop-common
-git checkout -b tobebuilt remotes/origin/branch-2.0.2-alpha-vcc
+git checkout -b tobebuilt release-2.0.3-alpha-rc0
 
 # build the artifacts using the "pure" maven builds
 
