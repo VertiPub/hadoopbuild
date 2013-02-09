@@ -1,12 +1,5 @@
 #!/bin/sh
 # deal with the fuse artifacts to create a tarball
-            a.  The build script will be passed an "ARTIFACT_VERSION" environment variable
-            b.  The build script will be passed the "DATE_STRING" environment variable should it need it
-            c.  The build script will be passed the "INSTALL_DIR" into which to unpack the artifacts created by the build script
-            d.  The build script will be passed the "RPM_DIR" into which to place the built RPM
-            e.  The build script will inherit the "WORKSPACE"  environment variable
-            f.  The build will pass in a description in a single quoted string in the "DESCRIPTION" env variable
-
 RPM_VERSION=0.1.0
 tar -C ${WORKSPACE}/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf ${WORKSPACE}/hadoop/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse_dfs 
 
