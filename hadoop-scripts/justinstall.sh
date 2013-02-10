@@ -68,5 +68,5 @@ fpm --verbose \
 ${CONFIG_FILES} \
 --rpm-user root \
 --rpm-group root \
--C ${WORKSPACE}/hadoop_install-${BUILD_NUMBER} \
+-C ${INSTALL_DIR} \
 opt etc
