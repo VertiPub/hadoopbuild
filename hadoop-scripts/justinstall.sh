@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -ex
 # deal with the fuse artifacts to create a tarball
 RPM_VERSION=0.1.0
 tar -C ${WORKSPACE}/hadoop-common/hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse_dfs 
@@ -44,7 +44,7 @@ mkdir --mode=0755 -p ${ETC_DIR}
 # move the config directory to /etc
 cp -rp ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop/* $ETC_DIR
 mv ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop-templates
-cd $DEST_ROOT
+cd ${INSTALL_DIR}
 find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
 export CONFIG_FILES=""
 for i in `cat /tmp/$$.files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
