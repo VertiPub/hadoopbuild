@@ -1,7 +1,7 @@
 #!/bin/sh
 # deal with the fuse artifacts to create a tarball
 RPM_VERSION=0.1.0
-tar -C ${WORKSPACE}/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf ${WORKSPACE}/hadoop/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse_dfs 
+tar -C ${WORKSPACE}/hadoop-common/hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse_dfs 
 
 # convert each tarball into an RPM
 DEST_ROOT=${INSTALL_DIR}/opt/fuse-${ARTIFACT_VERSION}
