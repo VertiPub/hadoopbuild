@@ -54,7 +54,7 @@ rm -f /tmp/$$.files
 
 #interleave lzo jars
 for i in share/hadoop/httpfs/tomcat/webapps/webhdfs/WEB-INF/lib share/hadoop/mapreduce/lib share/hadoop/yarn/lib share/hadoop/common/lib; do
-  cp -rp ${WORKSPACE}/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9].jar  ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/$i
+  cp -rp ${WORKSPACE}/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9]*[0-9].jar ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/$i
 done
 cp ${WORKSPACE}/hadoop-lzo/target/native/Linux-amd64-64/lib/libgplcompression.* ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/lib/native/
 
