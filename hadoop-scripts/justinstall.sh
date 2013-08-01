@@ -8,6 +8,7 @@ DEST_ROOT=${INSTALL_DIR}/opt/fuse-${ARTIFACT_VERSION}
 mkdir --mode=0755 -p ${DEST_ROOT}
 cd ${DEST_ROOT}
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz
+chmod 500 ${DEST_ROOT}/fuse_dfs
 
 cd ${RPM_DIR}
 
