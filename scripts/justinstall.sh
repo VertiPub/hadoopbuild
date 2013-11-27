@@ -1,6 +1,7 @@
 #!/bin/sh -ex
 # deal with the fuse artifacts to create a tarball
-RPM_VERSION=0.1.0
+ALTISCALE_RELEASE=${ALTISCALE_RELEASE:-0.1.0}
+
 tar -C ${WORKSPACE}/hadoop-common/hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/fuse-dfs -cvzf ${WORKSPACE}/hadoop-common/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse_dfs
 
 # convert each tarball into an RPM
@@ -22,7 +23,7 @@ fpm --verbose \
 -s dir \
 -t rpm \
 -n ${RPM_NAME} \
--v ${RPM_VERSION} \
+-v ${ALTISCALE_RELEASE} \
 --iteration ${DATE_STRING} \
 --rpm-user root \
 --rpm-group root \
@@ -71,7 +72,7 @@ fpm --verbose \
 -s dir \
 -t rpm \
 -n ${RPM_NAME}  \
--v ${RPM_VERSION} \
+-v ${ALTISCALE_RELEASE} \
 --iteration ${DATE_STRING} \
 --description "${DESCRIPTION}" \
 ${CONFIG_FILES} \
