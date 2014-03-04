@@ -39,6 +39,7 @@ mkdir --mode=0755 -p ${OPT_DIR}
 cd ${OPT_DIR}
 
 tar -xvzpf ${WORKSPACE}/hadoop-common/hadoop-dist/target/hadoop-${ARTIFACT_VERSION}.tar.gz
+chmod 755 ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}
 # https://verticloud.atlassian.net/browse/OPS-731
 # create /etc/hadoop, in a future version of the build we may move the config there directly
 ETC_DIR=${INSTALL_DIR}/etc/hadoop-${ARTIFACT_VERSION}
