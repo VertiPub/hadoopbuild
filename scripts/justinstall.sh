@@ -18,9 +18,6 @@ fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
---provides "libhdfs.so.0.0.0()(64bit)" \
---provides "libhdfs(x86-64)" \
---provides libhdfs \
 --description "${DESCRIPTION}" \
 --replaces vcc-fuse \
 -s dir \
@@ -71,6 +68,9 @@ fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--provides "libhdfs.so.0.0.0()(64bit)" \
+--provides "libhdfs(x86-64)" \
+--provides libhdfs \
 --replaces vcc-hadoop \
 --depends 'lzo > 2.0' \
 -s dir \
