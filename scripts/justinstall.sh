@@ -18,7 +18,9 @@ fpm --verbose \
 --maintainer ops@verticloud.com \
 --vendor VertiCloud \
 --provides ${RPM_NAME} \
+--provides libhdfs.so.0.0.0 \
 --provides libhdfs.so \
+--provides libhdfs \
 --description "${DESCRIPTION}" \
 --replaces vcc-fuse \
 -s dir \
