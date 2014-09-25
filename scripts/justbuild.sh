@@ -7,4 +7,4 @@ mvn clean test package
 
 cd ${WORKSPACE}/hadoop-common
 mvn versions:set -DnewVersion=${ARTIFACT_VERSION}
-mvn -Pdist,docs,src,native -Dtar -DskipTests -Dbundle.snappy  -Dsnappy.lib=/usr/lib64 -Drequire.fuse=true -Drequire.snappy -Dcontainer-executor.conf.dir=/etc/hadoop clean package
+mvn -Pdist,docs,src,native -Dtar -Dbundle.snappy  -Dsnappy.lib=/usr/lib64 -Drequire.fuse=true -Drequire.snappy -Dcontainer-executor.conf.dir=/etc/hadoop clean package
