@@ -1,0 +1,32 @@
+# Playtop: Container that provides a pre-built development environment
+
+FROM registry.service.altiscale.com:443/prometheus-6.5.7-201409302345
+RUN yum install -y jdk git vim wget openssl openssl-devel lzo-devel zlib-devel gcc autoconf automake libtool cmake
+ENV DATE_STRING $DATE_STRING
+ENV BUILD_TAG $BUILD_TAG
+ENV ARTIFACT_VERSION $ARTIFACT_VERSION
+ENV ALTISCALE_RELEASE $ALTISCALE_RELEASE
+ENV WORKSPACE $WORKSPACE
+
+# Install protobuf
+WORKDIR /root
+RUN wget https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2
+RUN tar xjf protobuf-2.5.0.tar.bz2
+WORKDIR /root/protobuf-2.5.0
+RUN ./configure
+RUN make
+RUN make install
+
+WORKDIR /root
+RUN wget http://mirror.olnevhost.net/pub/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
+RUN tar xzf apache-maven-3.2.5-bin.tar.gz
+
+ADD hadoop-common/ /root/hadoop/
+ADD hadoop-lzo/ /root/hadoop-lzo/
+
+RUN cd /root/hadoop-lzo &&  /root/apache-maven-3.2.5/bin/mvn versions:set -DnewVersion=0.4.18-${DATE_STRING} &&  /root/apache-maven-3.2.5/bin/mvn clean test package
+
+WORKDIR /root/hadoop
+RUN /root/apache-maven-3.2.5/bin/mvn -Pdist,src,native -Dtar -DskipTests -Dcontainer-executor.conf.dir=/etc/hadoop -Dmaven.javadoc.skip=true clean package -DOPENSSL_LIBRARIES='/usr/lib64/openssl/engines/lib4758cca.so /usr/lib64/openssl/engines/libaep.so /usr/lib64/openssl/engines/libatalla.so /usr/lib64/openssl/engines/libcapi.so /usr/lib64/openssl/engines/libchil.so /usr/lib64/openssl/engines/libcswift.so /usr/lib64/openssl/engines/libgmp.so /usr/lib64/openssl/engines/libnuron.so /usr/lib64/openssl/engines/libpadlock.so /usr/lib64/openssl/engines/libsureware.so /usr/lib64/openssl/engines/libubsec.so'
+
+

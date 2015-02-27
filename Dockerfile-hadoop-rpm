@@ -1,0 +1,88 @@
+# Playtop: Container that provides a pre-built development environment
+
+FROM hadoop-build
+
+RUN cd hadoop-hdfs-project/hadoop-hdfs/target/native/main/native/ && tar -cvzf /root/hadoop/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz fuse-dfs/
+
+# convert each tarball into an RPM
+WORKDIR /root
+ENV INSTALL_DIR /tmp/install 
+ENV RPM_DIR /root/rpm
+ENV DEST_ROOT ${INSTALL_DIR}/opt/fuse-${ARTIFACT_VERSION}  
+ENV DESCRIPTION Built by jenkins ${BUILD_TAG} 
+ENV RPM_NAME vcc-fuse-${ARTIFACT_VERSION}
+RUN sh -c "mkdir --mode=0755 -p $DEST_ROOT"
+RUN sh -c "cd $DEST_ROOT && tar -xvzpf /root/hadoop/hadoop-dist/target/fuse-${ARTIFACT_VERSION}.tar.gz"
+RUN sh -c "chmod 500 ${DEST_ROOT}/fuse-dfs"
+RUN gem source --add https://gems.service.verticloud.com/
+RUN gem install fpm --no-ri --no-rdoc -v 1.2
+WORKDIR  /root/rpm
+RUN fpm --verbose \
+--maintainer ops@verticloud.com \
+--vendor VertiCloud \
+--provides ${RPM_NAME} \
+--description "${DESCRIPTION}" \
+--replaces vcc-fuse \
+-s dir \
+-t rpm \
+-n ${RPM_NAME} \
+-v ${ALTISCALE_RELEASE} \
+--iteration ${DATE_STRING} \
+--rpm-user root \
+--rpm-group root \
+-C ${INSTALL_DIR} \
+opt
+
+#clear the install dir and re-use
+RUN sh -c "rm -rf ${INSTALL_DIR}"
+RUN sh -c "mkdir -p --mode 0755 ${INSTALL_DIR}"
+
+ENV OPT_DIR ${INSTALL_DIR}/opt
+RUN sh -c "mkdir --mode=0755 -p ${OPT_DIR}"
+#WORKDIR ${OPT_DIR}
+
+RUN cd $OPT_DIR && tar -xvzpf /root/hadoop/hadoop-dist/target/hadoop-${ARTIFACT_VERSION}.tar.gz
+RUN chmod 755 ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}
+# https://verticloud.atlassian.net/browse/OPS-731
+# create /etc/hadoop, in a future version of the build we may move the config there directly
+ENV ETC_DIR ${INSTALL_DIR}/etc/hadoop-${ARTIFACT_VERSION}
+RUN mkdir --mode=0755 -p ${ETC_DIR}
+# move the config directory to /etc
+RUN cp -rp ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop/* $ETC_DIR
+RUN mv ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/etc/hadoop-templates
+RUN cd $INSTALL_DIR && find etc -type f -print | awk '{print "/" $1}' > /tmp/$$.files
+RUN CONFIG_FILES="" && for i in `cat /tmp/$$.files`; do CONFIG_FILES="--config-files $i $CONFIG_FILES "; done
+ENV CONFIG_FILES $CONFIG_FILES
+RUN rm -f /tmp/$$.files
+
+
+#interleave lzo jars
+
+RUN cp -rp /root/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9]*[0-9].jar ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/share/hadoop/httpfs/tomcat/webapps/webhdfs/WEB-INF/lib
+RUN cp -rp /root/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9]*[0-9].jar ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/share/hadoop/mapreduce/lib
+RUN cp -rp /root/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9]*[0-9].jar ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/share/hadoop/yarn/lib
+RUN cp -rp /root/hadoop-lzo/target/hadoop-lzo-[0-9]*.[0-9]*.[0-9]*-[0-9]*[0-9].jar ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/share/hadoop/common/lib
+RUN cp /root/hadoop-lzo/target/native/Linux-amd64-64/lib/libgplcompression.* ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/lib/native/
+
+WORKDIR /root/rpm
+
+ENV RPM_NAME vcc-hadoop-${ARTIFACT_VERSION}
+RUN fpm --verbose \
+--maintainer ops@verticloud.com \
+--vendor VertiCloud \
+--provides ${RPM_NAME} \
+--provides "libhdfs.so.0.0.0()(64bit)" \
+--provides "libhdfs(x86-64)" \
+--provides libhdfs \
+--replaces vcc-hadoop \
+--depends 'lzo > 2.0' \
+-s dir \
+-t rpm \
+-n ${RPM_NAME}  \
+-v ${ALTISCALE_RELEASE} \
+--iteration ${DATE_STRING} \
+--description "${DESCRIPTION}" \
+--rpm-user root \
+--rpm-group root \
+-C ${INSTALL_DIR} \
+opt etc

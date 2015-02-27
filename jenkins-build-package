@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export DATE_STRING=`date +"%Y%m%d%H%M%S"`
+pushd $WORKSPACE
+cat hadoopbuild/Dockerfile-hadoop-build | envsubst > Dockerfile 
+sudo docker build -t hadoop-build .
+cp hadoopbuild/Dockerfile-hadoop-rpm Dockerfile
+sudo docker build -t hadoop-rpm .
+RPM_LOC=$(sudo docker run --name hadoop-rpm-container hadoop-rpm ls /root/rpm/)
+for i in ${RPM_LOC}; do sudo docker cp hadoop-rpm-container:/root/rpm/$i .; done
+sudo docker rm -f hadoop-rpm-container
+popd
