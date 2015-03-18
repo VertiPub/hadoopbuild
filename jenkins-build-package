@@ -2,6 +2,7 @@
 
 export DATE_STRING=`date +"%Y%m%d%H%M%S"`
 pushd $WORKSPACE
+cp $SETTINGS_XML .
 cat hadoopbuild/Dockerfile-hadoop-build | envsubst > Dockerfile 
 sudo docker build -t hadoop-build .
 cp hadoopbuild/Dockerfile-hadoop-rpm Dockerfile

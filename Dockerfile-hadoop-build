@@ -23,7 +23,7 @@ RUN tar xzf apache-maven-3.2.5-bin.tar.gz
 
 ADD hadoop-common/ /root/hadoop/
 ADD hadoop-lzo/ /root/hadoop-lzo/
-ADD /srv/jenkins-slave/.m2/ /root/.m2/
+ADD settings.xml /root/.m2/
 RUN cd /root/hadoop-lzo &&  /root/apache-maven-3.2.5/bin/mvn versions:set -DnewVersion=0.4.18-${DATE_STRING} &&  /root/apache-maven-3.2.5/bin/mvn clean test package
 
 WORKDIR /root/hadoop
