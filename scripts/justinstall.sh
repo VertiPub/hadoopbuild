@@ -25,8 +25,8 @@ fpm --verbose \
 -n ${RPM_NAME} \
 -v ${ALTISCALE_RELEASE} \
 --iteration ${DATE_STRING} \
---rpm-user root \
---rpm-group root \
+--rpm-user hadoop \
+--rpm-group hadoop \
 -C ${INSTALL_DIR} \
 opt
 
