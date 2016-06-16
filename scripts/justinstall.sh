@@ -61,6 +61,31 @@ for i in share/hadoop/httpfs/tomcat/webapps/webhdfs/WEB-INF/lib share/hadoop/map
 done
 cp ${WORKSPACE}/hadoop-lzo/target/native/Linux-amd64-64/lib/libgplcompression.* ${OPT_DIR}/hadoop-${ARTIFACT_VERSION}/lib/native/
 
+## ODPI
+# setup links for odpi layout compliance
+# client jars it expects to find, from all over the layout
+CLIENT_DIR=${OPT_DIR}/client
+mkdir ${CLIENT_DIR}
+for path in common common/lib mapreduce yarn yarn/lib hdfs hdfs/lib; do
+  for jar in `ls ${OPT_DIR}/share/hadoop/${path}/*.jar | xargs -n1 basename`; do
+    ln -s ${OPT_DIR}/share/hadoop/${path}/${jar} ${CLIENT_DIR}/${jar}
+  done
+done
+
+# expects these files to exist
+touch ${OPT_DIR}/libexec/hadoop-layout\.sh
+touch ${OPT_DIR}/libexec/init-hdfs\.sh
+
+# non-versioned symbolic links for hdfs and common
+for jar in hadoop-hdfs hadoop-hdfs-nfs; do
+  ln -s ${OPT_DIR}/share/hadoop/hdfs/${jar}-${ARTIFACT_VERSION}\.jar ${OPT_DIR}/share/hadoop/hdfs/${jar}\.jar
+done
+
+for jar in hadoop-common hadoop-nfs; do
+  ln -s ${OPT_DIR}/share/hadoop/common/${jar}-${ARTIFACT_VERSION}\.jar ${OPT_DIR}/share/hadoop/common/${jar}\.jar
+done
+## End ODPI
+
 cd ${RPM_DIR}
 
 export RPM_NAME=`echo vcc-hadoop-${ARTIFACT_VERSION}`
